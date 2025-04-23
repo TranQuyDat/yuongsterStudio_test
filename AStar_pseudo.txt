@@ -1,0 +1,57 @@
+*Pseudo Astar pathfingding
+FUNTION A_STAR(start, target):
+
+	openSet ← {start}
+	closeSet ← new empty list 
+	grid ← grid from gridManager
+
+	WHILE openSet Count IS NOT empty :
+
+	current ← element of openSet with lowest Fcost of element 
+	(if elements same Fcost  , use lowest Hcost)
+
+	IF current IS target : RETURN retracePath(current )
+
+	FOR EACH neighbor OF current :
+		IF neighbor IS NOT walkable OR neighbor IS IN closeSet :
+			CONTINUE			
+
+		newNeighborGcost ← currentGcost + getCost(current , neighbor)
+
+		IF neighbor IS NOT IN opentSet  OR neighborGcost > newNeighborGcost:
+			neighborGcost ← newNeighborGcost
+			neighborHcost ← getCost(neighbor , target)
+			neighborParent ← current
+
+			IF neighbor IS NOT IN openSet : 
+				ADD neighbor TO opentSet
+	
+	RETURN null
+
+
+FUNCTION getCost(a, b)
+	dx ← ABS(a.x - b.x)
+	dy ← ABS(a.y - b.y)
+ 	RETURN 14 * MIN(dx, dy) + 10 * ABS(dx - dy)
+
+FUNCTION getNeighbors(current):
+	neighbors ← empty list
+	dirs ← list of 8 direction vectors
+
+	FOR EACH dir IN dirs:
+		nx ← current.x + dir.x
+		ny ← current.y + dir.y
+		IF nx and ny ARE within grid bounds:
+   			ADD grid[nx][ny] TO neighbors
+	RETURN neighbors
+
+
+FUNCTION retracePath(current):
+	path ← empty list
+	node ← current
+	ADD node TO path
+	WHILE nodeParent IS NOT null:
+		node ← node.parent
+		ADD node TO path
+	REVERSE path
+	RETURN path
